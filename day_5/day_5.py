@@ -1,19 +1,19 @@
-# Part One
-print("Solution Part One")
-
+from sys import stdout
 import matplotlib.pyplot as plt
 import numpy as np
 import itertools
 from shapely.geometry import LineString
 from shapely.geometry import Point
 
+# Part One
+print("Solution Part One")
 
 input = "day_5_input.txt"
 test_input = "test_5_input.txt"
 
 line_coordinates = []
 
-with open(test_input) as file:
+with open(input) as file:
     for line in file:
         coordinates = line.rstrip().split("->")
         plot_line = []
@@ -26,14 +26,68 @@ with open(test_input) as file:
             plot_line.append(splitted_str)
             
         line_coordinates.append(plot_line)
-        
- 
+     
+
+def check_points_in_grid(x1,x2,grid):
+    key_check = x1.__str__() + '/' + x2.__str__()
+    for point in grid:
+        key = list(point.keys())[0]
+        if(key == key_check):
+            point[key] += 1
+           
 
 
 
 
-x = []
-y = []
+def generate_valid_lines():
+    valid = []
+    for line in line_coordinates:
+        x1 = line[0][0]
+        y1 = line[0][1]
+
+        x2 = line[1][0]
+        y2 = line[1][1]  
+
+        if(x1 == x2):
+            points_in_line = []
+            if(y1 < y2):
+              
+                for y in range(y1,y2+1):
+                    points_in_line.append([x1, y])
+            else:
+               
+                for y in range(y2,y1+1):
+                    points_in_line.append([x1, y])
+
+            valid.append(points_in_line)
+
+        if(y1 == y2):
+            points_in_line = []
+            if(x1 < x2):
+               
+                for x in range(x1,x2+1):
+                    points_in_line.append([x, y1])
+            else:
+                
+                for x in range(x2,x1+1):
+                    points_in_line.append([x, y1])
+
+            valid.append(points_in_line)
+
+    return valid
+
+
+
+def generate_empty_grid():
+    for x in range(0,max_x+1):
+        for y in range(0, max_y+1):
+            line_grid.append({x.__str__() +'/' +y.__str__() : 0})
+
+
+
+
+
+
 
 
 def get_x_y_vals(coordinates):
@@ -42,52 +96,50 @@ def get_x_y_vals(coordinates):
             x.append(points[0])
             y.append(points[1])
 
-
-
-
-def connectpoints(x,y,p1,p2):
-    x1, x2 = x[p1], x[p2]
-    y1, y2 = y[p1], y[p2]
-    plt.plot([x1,x2],[y1,y2],'k-')
-
-
-def draw():
-    a = 0
-    b = 1
-    for line in line_coordinates:
-        connectpoints(x,y,a,b)
-        a += 2
-        b += 2
-
-
-intersections = []
-
-def get_intersection(line_1, line_2):
-    return(line_1.intersection(line_2))
-
- 
-
-
-
+x = []
+y = []
 
 get_x_y_vals(line_coordinates)
-plt.plot(x,y, "ro")
-#draw()
-#plt.grid()
-#plt.show()
 
-for i in range(0, line_coordinates.__len__()-2):
-    for j in range(i+1, line_coordinates.__len__()-1):
-        line1 = LineString([(line_coordinates[i][0][0],line_coordinates[i][0][1]), (line_coordinates[i][1][0],line_coordinates[i][1][1])])
-        line2 = LineString([(line_coordinates[j][0][0],line_coordinates[j][0][1]), (line_coordinates[j][1][0],line_coordinates[j][1][1])])
+max_x = max(x)
+max_y = max(y)
+line_grid = []
 
-        print(line1.coords[0])
 
-        intersection = get_intersection(line1, line2)
+generate_empty_grid()
+
+valid_lines = generate_valid_lines()
+
+
+for index,line in enumerate(valid_lines):
+    stdout.write("\r"+index.__str__() + " of " + valid_lines.__len__().__str__())
+    stdout.write("\n") 
+    for i,points in enumerate(line):
+        stdout.write("\r"+i.__str__() + " of " + line.__len__().__str__())
+        stdout.flush()
+        check_points_in_grid(points[0],points[1],line_grid)
+    stdout.write("\n") 
+
+valid_overlaps = 0
+
+
+for field in line_grid:
+    key = list(field.keys())[0]
+    if(field[key] > 1):
+       valid_overlaps += 1
+
+
+
+print(valid_overlaps)
+
+
+
+
+
+
+
        
 
-
-print(intersections)
 
 
 
