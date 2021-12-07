@@ -18,7 +18,7 @@ number_of_fish = list(init_state(input))
 
 day = 0
 """
-while day < 10:
+while day < 80:
     #print("\r"+day.__str__())
 
     upper_bound = number_of_fish.__len__()
