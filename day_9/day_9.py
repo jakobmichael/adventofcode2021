@@ -64,10 +64,62 @@ def calculate_risk_level(minimum_heights):
 input = "day_9_input.txt"
 test_input = "test_9_input.txt"
 
-height_map = init_state(input)
+height_map = init_state(test_input)
 
 adjacent_heights = get_minimum_heights(height_map)
 
 risk_lvl = calculate_risk_level(adjacent_heights)
 
 print(risk_lvl)
+
+height_dict = {0: []}
+
+for i,row in enumerate(height_map):
+    temp = []
+    nines = []
+    height_dict[i] = []
+    for index,height in enumerate(row):
+      
+        if height != 9:
+            temp.append(height)
+        if index == row.__len__() -1 :
+            height_dict[i].append(temp)
+            temp = []
+        elif height == 9:
+            if index < row.__len__() - 1:
+                if row[index + 1] != 9:
+                    nines.append(height)
+                    height_dict[i].append(temp)
+                    height_dict[i].append(nines)
+                    nines = []
+                    temp = []
+                if row[index + 1] == 9:
+                    nines.append(height)
+            else:
+                nines.append(height)
+                height_dict[i].append(temp)
+                height_dict[i].append(nines)
+                nines = []
+                temp = []
+        #print(height_dict[i])
+        
+
+#print(height_dict)
+
+lengths = {}
+
+for i in range(0,len(height_dict)):
+    lengths[i] = 0
+    for basins in height_dict:
+        if 9 in basins[i]:
+            print()
+        else:
+            lengths[i] += basins[i].__len__()
+
+print(lengths)
+        
+
+        
+
+
+
